@@ -3,7 +3,7 @@
 # Date: 28/09/2022 
 # Time: 13:18
 from typing import List
-from sub0CrackerMain import printAnsInMap
+from main import printAnsInMap
 
 
 def findOptimizePath(graph: dict, stt: list, end: list):
