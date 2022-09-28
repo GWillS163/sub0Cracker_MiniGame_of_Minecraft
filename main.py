@@ -77,7 +77,6 @@ def dfs(map: dict, start: list, end: list) -> list:
 
 def findOptimizePath(graph: dict, stt: list, end: list):
     path, cost = spf(graph, stt, end)
-    print(path, cost)
     return path
 
 
@@ -94,6 +93,7 @@ def spf(graph: dict, stt: list, end: list, sttCost=0):  # -> List[List[int]]:
         (path, cost) = spf(graph, nextHop, end, sttCost)
         if not path:
             continue
+        # There cost maybe not correct
         pathDict.update({cost: [stt] + path})
     if not pathDict:
         return [], 99
@@ -192,19 +192,27 @@ def mapAddArrow(map2D, stepList):
 
 
 def printAnsInMap(map2D, answerList, stt, end):
-    print("the path is", answerList)
-
+    map2D[stt[0]][stt[1]] = "S"
+    map2D[end[0]][end[1]] = "E"
+    if not answerList:
+        printMap(map2D)
+        print(f"\033[1;31;40m{stt} -> {end} is not reachable\033[0m")
+        return
     map2D = mapAddArrow(map2D, answerList)
-
     step = ["①", "②", "③", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩", "⑪", "⑫", "⑬", "⑭", "⑮", "⑯", "⑰", "⑱", "⑲", "⑳"]
     n = 0
     for ans in answerList[1:]:
         map2D[ans[0]][ans[1]] = step[n]
         n += 1
-    print("that is also as following graph shown:")
-    map2D[stt[0]][stt[1]] = "S"
-    map2D[end[0]][end[1]] = "E"
+    print("that is also as following graph shown:\n")
     # print(f"　", end="")
+    printMap(map2D)
+    print("")
+    print("_" * 40 )
+
+    # pprint(map2D)
+
+def printMap(map2D):
     for colN in range(len(map2D[0])):
         print(f"\t{colN}", end="")
     print("")
@@ -220,9 +228,6 @@ def printAnsInMap(map2D, answerList, stt, end):
             else:
                 print(cell, end="\t")
         print("")
-    # print("\t", "_" * 4 * len(map2D[0]))
-
-    # pprint(map2D)
 
 
 def getSttAndEnd(map_lv):
@@ -242,9 +247,11 @@ def getSttAndEnd(map_lv):
     return stt, end
 
 
-def main(map_lv):
+def main(map_lv, mapName=""):
+    print("MAP: ", mapName)
     stt, end = getSttAndEnd(map_lv)
-    print("start point is ", stt, "end point is ", end)
+    print("Stt: ", stt,
+          "\nEnd: ", end)
     nodeGraph = findPathGraph(map_lv, stt, end)
     if nodeGraph is None:
         print("No path")
@@ -252,41 +259,7 @@ def main(map_lv):
     # pprint(nodeGraph)
     optimizePath = findOptimizePath(nodeGraph, stt, end)
     # optimizePath = dfs(nodeGraph, stt, end)
+    print("path: ", optimizePath)
+    print("step: ", len(optimizePath))
     printAnsInMap(map_lv, optimizePath, stt, end)
 
-
-if __name__ == '__main__':
-    graph = {'[0, 0]': [[3, 0]],
-             '[0, 4]': [[4, 4]],
-             '[0, 5]': [[5, 5], [0, 4]],
-             '[1, 0]': [[1, 2]],
-             '[1, 1]': [[5, 1], [1, 0], [1, 2]],
-             '[1, 2]': [[0, 2]],
-             '[2, 0]': [[0, 0], [3, 0], [2, 5]],
-             '[2, 3]': [[2, 0], [2, 5]],
-             '[2, 5]': [[0, 5], [5, 5]],
-             '[3, 0]': [[3, 5]],
-             '[3, 5]': [],
-             '[4, 1]': [[1, 1], [5, 1], [4, 5]],
-             '[4, 4]': [[4, 1], [4, 5]],
-             '[4, 5]': [],
-             '[5, 0]': [[5, 3]],
-             '[5, 1]': [],
-             '[5, 3]': [[2, 3]],
-             '[5, 5]': []}
-    maps_lv10 = [
-        [0, 0, 0, 0, 0, 0],
-        [0, 1, 9, 0, 0, 1],
-        [0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0],
-        [1, 0, 0, 0, 0, 0],
-        [0, 0, 0, 1, 6, 1]]
-
-    bestPath = [[5, 4], [0, 4], [0, 0], [3, 0], [3, 5], [4, 5], [4, 1], [5, 1], [5, 2], [1, 2]]
-    # printAnsInMap(maps_lv10, bestMap)
-    main(maps_lv10)
-    # map2D = mapAddArrow(maps_lv10, bestPath)
-    # pprint(map2D)
-
-    # shortest = getOptimizationPath(maps_lv10, [5, 4], [1, 2])
-    # print(shortest)

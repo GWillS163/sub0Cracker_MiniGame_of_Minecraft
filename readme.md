@@ -1,66 +1,58 @@
 ## Introduce 
-A cracker in the sub0, a mini-game of Minecraft official Map, use that can get the answer of the level map.
+<hr>
+A cracker in the sub0, a mini-game of Minecraft official Map, use that can get the answer to pass the level map.
 
-## Usage
-### 1. Input the map in your game
+## How to use
+<hr>
 
-![img_4.png](md_src/img_4.png)
+### 1. Input the map which is at your level in the game
+The map of the level you arrived.
+<div align="center">
+    <img src="img.png" width="50%" alt="a map picture in the game"/>
+    <p style="font-size: 18px">For Instance, level 10</p>
+</div>
+
+```python
+# border is 1 and the floor is 0
+# 6 is entrance and 9 is exit 
+# like this:
+map_lv10 = [ # turn it to digital map with a list 
+            [0, 1, 0, 0, 0, 1],
+            [0, 0, 0, 0, 0, 6],
+            [0, 0, 0, 0, 0, 1],
+            [0, 9, 0, 0, 0, 0],
+            [0, 1, 0, 0, 0, 0],
+            [0, 0, 0, 0, 1, 1]
+    ]
+```
 
 ### 2. run the script
+Then you will get the answer hint
 
-Then get the answer hint
 ```
+MAP:  10
+Stt:  [1, 5] 
+End:  [3, 1]
+path:  [[1, 5], [1, 0], [5, 0], [5, 3], [0, 3], [0, 4], [4, 4], [4, 5], [3, 5], [3, 1]]
+step:  10
 that is also as following graph shown:
-	0	1	2	3	4	5	6	7
-0 	　	　	　	■	　	　	　	　	
-1 	　	　	　	■	　	　	　	　	
-2 	　	　	　	　	　	　	S	①	
-3 	　	■	　	■	　	　	　	↓	
-4 	■	⑧	→	→	→	⑨	■	↓	
-5 	　	↑	　	■	　	⑩	E	↓	
-6 	⑤	↑	←	④	　	■	　	↓	
-7 	⑥	⑦	■	③	←	←	←	②	
+
+	0	1	2	3	4	5
+0 	　	■	　	④	⑤	■	
+1 	①	←	←	↑	↓	S	
+2 	↓	　	　	↑	↓	■	
+3 	↓	E	←	←	←	⑧	
+4 	↓	■	　	↑	⑥	⑦	
+5 	②	→	→	③	■	■	
 ```
 
-Which mean is that following the hint, you can get the answer
-![img_1.png](md_src/img_1.png)
+Which mean is that following the hint, you can pass the level easily.
+![img_1.png](img_1.png)
 
+## One More Thing
+<hr>
+If you want to know more about the game, you can visit the official website of EverBloom Studio: 
 
-
-# How to use
-1. Input your map in your game, the format is like this:
-border is 1 and the floor is 0,
-2. 6 is entrance and 9 is exit like this:
-![img.png](md_src/img.png)
-```python
-lv10 = [[0, 0, 0, 0, 0, 0],
-[0, 1, 0, 0, 0, 1],
-[0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0],
-[1, 0, 0, 0, 0, 0],
-[0, 0, 0, 1, 0, 1]]
-```
-
-## The more instances
-![img_2.png](md_src/img_2.png)
-
-```python
-map_lv11 = [
-[0, 0, 1, 0, 0, 0],
-[0, 0, 0, 0, 0, 1],
-[0, 0, 0, 1, 0, 0],
-[0, 0, 1, 0, 0, 0],
-[0, 0, 0, 0, 0, 0],
-[0, 1, 0, 0, 0, 0]]
-```
-![img_3.png](md_src/img_3.png)
-
-```python
-map_lv12 = [
-[0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 1],
-[0, 0, 0, 0, 0, 1],
-[1, 0, 0, 9, 0, 1],
-[0, 0, 1, 0, 0, 0],
-[6, 1, 0, 1, 0, 0]]
-```
+[https://everbloomgames.com/minecraft-maps/sub0/](https://everbloomgames.com/minecraft-maps/sub0/)
+## official Introduce about the game
+Slide a blue cube across the ice to the gold block. Sounds easy, right? Challenge yourself and complete all 40 brain-bending levels! This frozen puzzle map is fun for all ages!
