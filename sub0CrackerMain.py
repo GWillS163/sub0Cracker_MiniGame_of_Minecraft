@@ -1,8 +1,4 @@
-#  Author : Github: @GWillS163
-#  Time: $(Date)
 
-#  Author : Github: @GWillS163
-#  Time: $(Date)
 
 from pprint import pprint
 
@@ -60,38 +56,8 @@ def getNearestPosition(maps: list, current: list):
     return withoutDuplicate
 
 
-def getShortestPath(graphs: dict, stt: list, end: list):
-    """
-    Input start Node , end Node
-    :param graphs:
-    :param stt:
-    :param end:
-    :return:
-    """
-    queue = [stt]
-    visited = []
-    res = [stt]
-    costList = {str(stt): [0, stt]}
-    while queue:
-        currentNode = list(queue.pop())
-        if currentNode in visited:
-            continue
-        visited.append(currentNode)
-
-        # 添加相邻的节点 - add the adjacent node
-        if not str(currentNode) in graphs.keys():
-            continue
-        for node in graphs[str(currentNode)]:
-            queue.append(node)
-            if node in visited:
-                continue
-            lastCost = costList[str(currentNode)][0]
-            costList.update({str(node): []})
-            costList[str(node)] = [lastCost + 1, currentNode]
-
-    return costList
-
 def dfs(map: dict, start: list, end: list) -> list:
+    # TODO: 非最短路径
     stack = [start]
     visited = []
     while stack:
@@ -107,6 +73,29 @@ def dfs(map: dict, start: list, end: list) -> list:
         for node in map[str(current)]:
             stack.append(node)
     return visited
+
+
+def getOptimizationPathBySPF(graph: dict, stt: list, end: list, lastCost=0):  # -> List[List[int]]:
+    """
+    获得最短路径通过spf递归算法
+    Obtain the shortest path by spf recursive algorithm
+    :param graph:
+    :param stt:
+    :param end:
+    :param lastCost:
+    :return:
+    """
+    # get stt up
+    if str(stt) == str(end):
+        return [stt]
+    if str(stt) not in graph.keys():
+        return None
+
+    nextHops = graph[str(stt)]
+    for nextHop in nextHops:
+        path = getOptimizationPathBySPF(graph, nextHop, end, lastCost + 1)
+        if path is not None:
+            return [stt] + path
 
 
 def getKey(graph: dict, currentNode: list):
@@ -144,7 +133,7 @@ def isPassEnd(current, nextHop, end):
     return False
 
 
-def findOptimizationPath(map2D: list, start: list, end: list):
+def findPathGraph(map2D: list, start: list, end: list):
     queue = []
     visited = []
     queue.append(start)
@@ -169,27 +158,67 @@ def findOptimizationPath(map2D: list, start: list, end: list):
             graph[str(currentNode)].append(nextHop)
             # 判断是否到达终点 - judge if it is the end point
             if isPassEnd(currentNode, nextHop, end):
-                graph[str(currentNode)].append(end)
+                if end not in graph[str(currentNode)]:
+                    graph[str(currentNode)].append(end)
                 break
     return graph
 
 
-def printAnsInMap(map2D, answerList, stt, end):
-    print(answerList)
-    for ans in answerList:
-        map2D[ans[0]][ans[1]] = "℗"
+def mapAddArrow(map2D, stepList):
+    last = stepList[0]
+    for curr in stepList[1:]:
+        # up
+        if last[1] == curr[1] and last[0] > curr[0]:
+            for row in range(curr[0], last[0]):
+                map2D[row][last[1]] = "↑"
+        # down
+        elif last[1] == curr[1] and last[0] < curr[0]:
+            for row in range(last[0], curr[0]):
+                map2D[row][last[1]] = "↓"
+        # left
+        elif last[0] == curr[0] and last[1] > curr[1]:
+            for col in range(curr[1], last[1]):
+                map2D[last[0]][col] = "←"
+        # right
+        elif last[0] == curr[0] and last[1] < curr[1]:
+            for col in range(last[1], curr[1]):
+                map2D[last[0]][col] = "→"
+        else:
+            raise Exception(f"error: {last} -> {curr}")
+        last = curr
+    return map2D
 
+
+def printAnsInMap(map2D, answerList, stt, end):
+    print("the path is", answerList)
+
+    map2D = mapAddArrow(map2D, answerList)
+
+    step = ["①", "②", "③", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩", "⑪", "⑫", "⑬", "⑭", "⑮", "⑯", "⑰", "⑱", "⑲", "⑳"]
+    n = 0
+    for ans in answerList[1:]:
+        map2D[ans[0]][ans[1]] = step[n]
+        n += 1
+    print("that is also as following graph shown:")
     map2D[stt[0]][stt[1]] = "S"
     map2D[end[0]][end[1]] = "E"
+    # print(f"　", end="")
+    for colN in range(len(map2D[0])):
+        print(f"\t{colN}", end="")
+    print("")
+    rowN = 0
     for row in map2D:
+        print(rowN, "\t", end="")
+        rowN += 1
         for cell in row:
             if cell == 1:
                 print("■", end="\t")
             elif cell == 0:
-                print("□", end="\t")
+                print("　", end="\t")
             else:
                 print(cell, end="\t")
         print("")
+    # print("\t", "_" * 4 * len(map2D[0]))
 
     # pprint(map2D)
 
@@ -214,11 +243,13 @@ def getSttAndEnd(map_lv):
 def main(map_lv):
     stt, end = getSttAndEnd(map_lv)
     print("start point is ", stt, "end point is ", end)
-    nodeGraph = findOptimizationPath(map_lv, stt, end)
+    nodeGraph = findPathGraph(map_lv, stt, end)
     if nodeGraph is None:
         print("No path")
         exit(0)
-    optimizePath = dfs(nodeGraph, stt, end)
+    # pprint(nodeGraph)
+    optimizePath = getOptimizationPathBySPF(nodeGraph, stt, end)
+    # optimizePath = dfs(nodeGraph, stt, end)
     printAnsInMap(map_lv, optimizePath, stt, end)
 
 
@@ -249,5 +280,11 @@ if __name__ == '__main__':
         [1, 0, 0, 0, 0, 0],
         [0, 0, 0, 1, 6, 1]]
 
+    bestPath = [[5, 4], [0, 4], [0, 0], [3, 0], [3, 5], [4, 5], [4, 1], [5, 1], [5, 2], [1, 2]]
+    # printAnsInMap(maps_lv10, bestMap)
     main(maps_lv10)
+    # map2D = mapAddArrow(maps_lv10, bestPath)
+    # pprint(map2D)
 
+    # shortest = getOptimizationPath(maps_lv10, [5, 4], [1, 2])
+    # print(shortest)

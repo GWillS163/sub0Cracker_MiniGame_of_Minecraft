@@ -60,6 +60,7 @@ if __name__ == '__main__':
         [0, 0, 0, 0, 0, 1, 0, 0],
         [0, 0, 1, 0, 0, 0, 0, 0],
     ]
+
     main(map_lv12)
     main(map_lv13)
     main(map_lv14)
