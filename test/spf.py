@@ -3,21 +3,30 @@
 # Date: 28/09/2022 
 # Time: 13:18
 from typing import List
+from sub0CrackerMain import printAnsInMap
 
 
+def findOptimizePath(graph: dict, stt: list, end: list):
+    path, cost = spf(graph, stt, end)
+    print(path, cost)
+    return path
 
-def spf(graph: dict, stt: list, end: list, lastCost=0):  # -> List[List[int]]:
+
+def spf(graph: dict, stt: list, end: list, sttCost=0):  # -> List[List[int]]:
     # get stt up
     if str(stt) == str(end):
-        return [stt]
+        return [stt], sttCost + 1
     if str(stt) not in graph.keys():
-        return None
+        return [], sttCost + 1
 
     nextHops = graph[str(stt)]
+    pathDict = {}
     for nextHop in nextHops:
-        path = spf(graph, nextHop, end, lastCost + 1)
-        if path is not None:
-            return [stt] + path
+        (path, cost) = spf(graph, nextHop, end, sttCost)
+        if not path:
+            continue
+        pathDict.update({cost: [stt] + path})
+    return pathDict[min(pathDict.keys())], min(pathDict.keys())
 
 
 if __name__ == '__main__':
@@ -64,4 +73,31 @@ if __name__ == '__main__':
     # 3 	③	　	　	　	　	④
     # 4 	■	⑥	　	　	　	⑤
     # 5 	⑨	⑦	⑧	■	S	■
-    print(spf(gra2, [5, 4], [1, 2]))
+    # print(spf(gra2, [5, 4], [1, 2]))
+
+    gra3 = {'[0, 0]': [[3, 0], [0, 2]],
+            '[0, 2]': [[6, 2]],
+            '[0, 4]': [[7, 4], [0, 7]],
+            '[0, 5]': [[5, 5]],
+            '[0, 6]': [[3, 6], [0, 4], [0, 7]],
+            '[0, 7]': [[7, 7]],
+            '[2, 0]': [[0, 0], [3, 0], [2, 7]],
+            '[2, 6]': [[0, 6], [3, 6], [2, 0], [2, 7]],
+            '[2, 7]': [[0, 7], [7, 7]],
+            '[3, 4]': [[7, 4], [3, 7]],
+            '[3, 6]': [[3, 4], [3, 7]],
+            '[3, 7]': [[7, 7]],
+            '[4, 1]': [[4, 5]],
+            '[4, 5]': [[0, 5], [5, 5]],
+            '[5, 0]': [[7, 0], [5, 2]],
+            '[5, 4]': [[5, 7], [5, 6]],
+            '[5, 5]': [[5, 4], [5, 7], [5, 6]],
+            '[6, 0]': [[5, 0], [7, 0], [6, 4]],
+            '[6, 2]': [[6, 0], [6, 4]],
+            '[6, 3]': [[6, 0], [6, 4]],
+            '[7, 0]': [[7, 1]],
+            '[7, 1]': [[4, 1]],
+            '[7, 3]': [[6, 3]],
+            '[7, 4]': [[7, 3]],
+            '[7, 7]': [[7, 3]]}
+    answerList = findOptimizePath(gra3, [2, 6], [5, 6])

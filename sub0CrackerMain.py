@@ -75,27 +75,29 @@ def dfs(map: dict, start: list, end: list) -> list:
     return visited
 
 
-def getOptimizationPathBySPF(graph: dict, stt: list, end: list, lastCost=0):  # -> List[List[int]]:
-    """
-    获得最短路径通过spf递归算法
-    Obtain the shortest path by spf recursive algorithm
-    :param graph:
-    :param stt:
-    :param end:
-    :param lastCost:
-    :return:
-    """
+def findOptimizePath(graph: dict, stt: list, end: list):
+    path, cost = spf(graph, stt, end)
+    print(path, cost)
+    return path
+
+
+def spf(graph: dict, stt: list, end: list, sttCost=0):  # -> List[List[int]]:
     # get stt up
     if str(stt) == str(end):
-        return [stt]
+        return [stt], sttCost + 1
     if str(stt) not in graph.keys():
-        return None
+        return [], sttCost + 1
 
     nextHops = graph[str(stt)]
+    pathDict = {}
     for nextHop in nextHops:
-        path = getOptimizationPathBySPF(graph, nextHop, end, lastCost + 1)
-        if path is not None:
-            return [stt] + path
+        (path, cost) = spf(graph, nextHop, end, sttCost)
+        if not path:
+            continue
+        pathDict.update({cost: [stt] + path})
+    if not pathDict:
+        return [], 99
+    return pathDict[min(pathDict.keys())], min(pathDict.keys())
 
 
 def getKey(graph: dict, currentNode: list):
@@ -248,7 +250,7 @@ def main(map_lv):
         print("No path")
         exit(0)
     # pprint(nodeGraph)
-    optimizePath = getOptimizationPathBySPF(nodeGraph, stt, end)
+    optimizePath = findOptimizePath(nodeGraph, stt, end)
     # optimizePath = dfs(nodeGraph, stt, end)
     printAnsInMap(map_lv, optimizePath, stt, end)
 
