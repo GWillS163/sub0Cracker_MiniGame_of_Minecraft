@@ -91,12 +91,13 @@ if __name__ == '__main__':
         [0, 0, 0, 0, 0, 0, 0, 0],
     ]
 
-    main(map_lv10, "10")
-    main(map_lv11, "11")
-    main(map_lv12, "12")
-    main(map_lv13, "13")
-    main(map_lv14, "14")
-    main(map_lv15, "15")
-    main(map_lv16, "16")
+    # main(map_lv10, "10")
+    # main(map_lv11, "11")
+    # main(map_lv12, "12")
+    # main(map_lv13, "13")
+    # main(map_lv14, "14")
+    # main(map_lv15, "15")
+    # main(map_lv16, "16")
     main(map_lv17, "17")
-    main(map_lv18, "18")
+    printMap(map_lv17)
+    # main(map_lv18, "18")
